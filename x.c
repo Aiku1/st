@@ -277,8 +277,6 @@ clipcopy(const Arg *dummy)
 		clipboard = XInternAtom(xw.dpy, "CLIPBOARD", 0);
 		XSetSelectionOwner(xw.dpy, clipboard, xw.win, CurrentTime);
 	}
-
-    //clipcopy(NULL);
 }
 
 void
@@ -664,7 +662,7 @@ setsel(char *str, Time t)
 	if (XGetSelectionOwner(xw.dpy, XA_PRIMARY) != xw.win)
 		selclear();
 
-	xclipcopy();
+	clipcopy(NULL);
 }
 
 void
@@ -682,8 +680,6 @@ brelease(XEvent *e)
 	}
 
 	if (e->xbutton.button == Button2)
-		clippaste(NULL);
-	if (e->xbutton.button == Button3)
 		clippaste(NULL);
 	else if (e->xbutton.button == Button1)
 		mousesel(e, 1);
@@ -1548,11 +1544,7 @@ xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, i
 	XftDrawSetClipRectangles(xw.draw, winx, winy, &r, 1);
 
 	/* Render the glyphs. */
-	FcBool b = FcFalse;
-		FcPatternGetBool(specs->font->pattern, FC_COLOR, 0, &b);
-	if (!b) {
-    		XftDrawGlyphFontSpec(xw.draw, fg, specs, len);
-	}
+	XftDrawGlyphFontSpec(xw.draw, fg, specs, len);
 
 	/* Render underline and strikethrough. */
 	if (base.mode & ATTR_UNDERLINE) {
